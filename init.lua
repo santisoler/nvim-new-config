@@ -1,2 +1,3 @@
 require("config.lazy")
-require("config.setup")
+require("config.base")
+require("config.diagnostics")
