@@ -45,3 +45,10 @@ vim.lsp.handlers["textDocument/signatureHelp"] =
 -- Define commands to enable/disable diagnostics
 vim.cmd('command DisableDiagnostics lua vim.diagnostic.disable()')
 vim.cmd('command EnableDiagnostics lua vim.diagnostic.enable()')
+
+-- Global mappings.
+-- See `:help vim.diagnostic.*` for documentation on any of the below functions
+vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next)
+vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist)
