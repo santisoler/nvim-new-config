@@ -1,25 +1,4 @@
-function config_mason_lsp()
-    -- Imports should be done in this order: mason then mason-lspconfig
-    require("mason").setup()
-    require("mason-lspconfig").setup {
-        ensure_installed = { "lua_ls", "pylsp" },
-    }
-
-    -- Configure nvim-cmp
-    config_cmp()
-
-    -- Setup servers
-    local capabilities = require('cmp_nvim_lsp').default_capabilities()
-
-    require("lspconfig").lua_ls.setup{
-      capabilities = capabilities
-    }
-    require("lspconfig").pylsp.setup{
-      capabilities = capabilities
-    }
-end
-
-function config_cmp()
+local function config_cmp()
 
   -- Define functions for Tab and Shift+Tab
   local has_words_before = function()
@@ -107,6 +86,26 @@ function config_cmp()
   })
 end
 
+local function config_mason_lsp()
+    -- Imports should be done in this order: mason then mason-lspconfig
+    require("mason").setup()
+    require("mason-lspconfig").setup {
+        ensure_installed = { "lua_ls", "pylsp" },
+    }
+
+    -- Configure nvim-cmp
+    config_cmp()
+
+    -- Setup servers
+    local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+    require("lspconfig").lua_ls.setup{
+      capabilities = capabilities
+    }
+    require("lspconfig").pylsp.setup{
+      capabilities = capabilities
+    }
+end
 
 
 -- --------------
