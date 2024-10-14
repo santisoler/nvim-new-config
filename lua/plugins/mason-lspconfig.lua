@@ -20,11 +20,21 @@ function config_mason_lsp()
 end
 
 function config_cmp()
+
+  -- Define functions for Tab and Shift+Tab
+  local has_words_before = function()
+    unpack = unpack or table.unpack
+    local line, col = unpack(vim.api.nvim_win_get_cursor(0))
+    return col ~= 0 and vim.api.nvim_buf_get_lines(0, line - 1, line, true)[1]:sub(col, col):match("%s") == nil
+  end
+
+  local feedkey = function(key, mode)
+    vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes(key, true, true, true), mode, true)
+  end
+  ---
+
   -- Set up nvim-cmp.
   local cmp = require'cmp'
-
-  -- Define select_opts (used for Tab and Shift+Tab)
-  local select_opts = {behavior = cmp.SelectBehavior.Select}
 
   cmp.setup({
     snippet = {
@@ -45,26 +55,26 @@ function config_cmp()
       ['<CR>'] = cmp.mapping.confirm({ select = true }), -- Accept currently selected item. Set `select` to `false` to only confirm explicitly selected items.
 
       -- Use Tab and Shift+Tab to explore autocomplete options
-      -- (source: https://vonheikemen.github.io/devlog/tools/setup-nvim-lspconfig-plus-nvim-cmp/)
-      ['<Tab>'] = cmp.mapping(function(fallback)
-        local col = vim.fn.col('.') - 1
-
+      -- (source: https://github.com/hrsh7th/nvim-cmp/wiki/Example-mappings#super-tab-like-mapping)
+      ["<Tab>"] = cmp.mapping(function(fallback)
         if cmp.visible() then
-          cmp.select_next_item(select_opts)
-        elseif col == 0 or vim.fn.getline('.'):sub(col, col):match('%s') then
-          fallback()
-        else
+          cmp.select_next_item()
+        elseif vim.fn["vsnip#available"](1) == 1 then
+          feedkey("<Plug>(vsnip-expand-or-jump)", "")
+        elseif has_words_before() then
           cmp.complete()
-        end
-      end, {'i', 's'}),
-
-      ['<S-Tab>'] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-          cmp.select_prev_item(select_opts)
         else
-          fallback()
+          fallback() -- The fallback function sends a already mapped key. In this case, it's probably `<Tab>`.
         end
-      end, {'i', 's'}),
+      end, { "i", "s" }),
+
+      ["<S-Tab>"] = cmp.mapping(function()
+        if cmp.visible() then
+          cmp.select_prev_item()
+        elseif vim.fn["vsnip#jumpable"](-1) == 1 then
+          feedkey("<Plug>(vsnip-jump-prev)", "")
+        end
+      end, { "i", "s" }),
     }),
 
     sources = cmp.config.sources({
