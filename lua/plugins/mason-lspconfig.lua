@@ -86,25 +86,64 @@ local function config_cmp()
   })
 end
 
+
 local function config_mason_lsp()
     -- Imports should be done in this order: mason then mason-lspconfig
     require("mason").setup()
     require("mason-lspconfig").setup {
-        ensure_installed = { "lua_ls", "pylsp" },
+        ensure_installed = { "lua_ls", "pylsp", "ruff" },
     }
 
     -- Configure nvim-cmp
     config_cmp()
 
     -- Setup servers
+    local lspconfig = require("lspconfig")
     local capabilities = require('cmp_nvim_lsp').default_capabilities()
 
-    require("lspconfig").lua_ls.setup{
+    -- Lua lsp
+    lspconfig.lua_ls.setup{
       capabilities = capabilities
     }
-    require("lspconfig").pylsp.setup{
-      capabilities = capabilities
+
+    -- Pylsp
+    lspconfig.pylsp.setup{
+      capabilities = capabilities,
+      settings = {
+        -- configure plugins in pylsp
+        pylsp = {
+          plugins = {
+            pyflakes = {enabled = false},
+            pylint = {enabled = false},
+            flake8 = {enabled = false},
+            pycodestyle = {enabled = false},
+            jedi_completion = { fuzzy = true },
+            pylsp_mypy = {
+              -- needs pylsp-mypy
+              -- (install with pip in the same environment as pylsp:
+              -- https://github.com/python-lsp/python-lsp-server/discussions/546)
+              enabled = true,
+            },
+          },
+        },
+      },
     }
+
+    -- Ruff (python linter as lsp)
+    lspconfig.ruff.setup {
+      capabilities = capabilities,
+      -- Configure settings: https://docs.astral.sh/ruff/editors/settings/#configuration
+      init_options = {
+        settings = {
+          lint = {
+            enable = true,
+            extendSelect = {"F", "E", "ARG"},
+          },
+        }
+      }
+    }
+
+
 end
 
 
