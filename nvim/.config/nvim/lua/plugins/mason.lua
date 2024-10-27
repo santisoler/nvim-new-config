@@ -1,24 +1,22 @@
 -- Add function to install all packages in the following array
 -- -----------------------------------------------------------
 local MASON_PACKAGES = {
-  "pyright",
+  -- LSPs
   "python-lsp-server", -- pylsp
-  "jedi-language-server",
-  -- "black",
-  -- "flake8",
-  -- "mypy",
   "ruff",
+  "ltex-ls",
+  "lua-language-server",
+  "rust-analyzer",
+  -- Linters
   -- "prettier",
   -- "rstcheck",
   -- "stylelint",
   -- "proselint",
   -- "shellcheck",
   -- "markdownlint",
-  -- "rust-analyzer",
-  -- "tree-sitter-cli",
   -- "texlab",
-  "lua-language-server",
-  -- "ltex-ls",
+  -- Other packages
+  "tree-sitter-cli",
 }
 
 function MasonAutoInstall(start_mason)
@@ -27,9 +25,13 @@ function MasonAutoInstall(start_mason)
     start_mason = true
   end
 
+  -- Update Mason package list first
+  vim.api.nvim_command("MasonUpdate")
+
   local level = vim.log.levels.INFO
   local registry = require("mason-registry")
 
+  -- Install packages
   for _, pkg_name in pairs(MASON_PACKAGES) do
     local package = registry.get_package(pkg_name)
     if not package:is_installed() then
@@ -40,6 +42,7 @@ function MasonAutoInstall(start_mason)
     end
   end
 
+  -- Launch Mason if requested
   if start_mason then
     vim.api.nvim_command("Mason")
   end
@@ -70,6 +73,9 @@ function MasonInstallPylspPlugins()
       :start()
 end
 
+
+vim.api.nvim_create_user_command('MasonAutoInstall', MasonAutoInstall, {})
+vim.api.nvim_create_user_command('MasonInstallPylspPlugins', MasonInstallPylspPlugins, {})
 
 -- --------------
 -- Manage plugins

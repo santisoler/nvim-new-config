@@ -1,7 +1,10 @@
 return {
   {
     "nvim-treesitter/nvim-treesitter",
-    build = ":TSUpdate",
+    dependencies = {
+      "williamboman/mason.nvim", --depend on mason to install tree-sitter first
+    },
+    build = {":MasonInstall tree-sitter-cli", ":TSUpdate"},
     config = function ()
       local configs = require("nvim-treesitter.configs")
 
