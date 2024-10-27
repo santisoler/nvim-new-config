@@ -87,13 +87,7 @@ local function config_cmp()
 end
 
 
-local function config_mason_lsp()
-    -- Imports should be done in this order: mason then mason-lspconfig
-    require("mason").setup()
-    require("mason-lspconfig").setup {
-        ensure_installed = { "lua_ls", "pylsp", "ruff" },
-    }
-
+local function config_lsp()
     -- Configure nvim-cmp
     config_cmp()
 
@@ -153,12 +147,15 @@ end
 --
 return {
   {
-    "williamboman/mason-lspconfig.nvim",
+   "neovim/nvim-lspconfig",
     dependencies = {
-        "williamboman/mason.nvim",
-        "neovim/nvim-lspconfig",
-        -- nvim-cmp (not dependencies of mason-lspconfig)
         "hrsh7th/nvim-cmp",
+    },
+    config = config_lsp,
+  },
+  {
+   "hrsh7th/nvim-cmp",
+    dependencies = {
         "hrsh7th/cmp-nvim-lsp",
         "hrsh7th/cmp-buffer",
         "hrsh7th/cmp-path",
@@ -167,6 +164,5 @@ return {
         "hrsh7th/cmp-vsnip",
         "hrsh7th/vim-vsnip",
     },
-    config = config_mason_lsp,
-  },
+  }
 }
