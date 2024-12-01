@@ -15,6 +15,8 @@ local MASON_PACKAGES = {
   -- "shellcheck",
   -- "markdownlint",
   -- "texlab",
+  -- Autoformatters
+  "stylua",
   -- Other packages
   "tree-sitter-cli",
 }
