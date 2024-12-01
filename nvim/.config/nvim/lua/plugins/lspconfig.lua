@@ -137,6 +137,17 @@ local function config_lsp()
       }
     }
 
+    -- Rust analyzer
+    lspconfig.rust_analyzer.setup {
+      settings = {
+        ['rust-analyzer'] = {
+          diagnostics = {
+            enable = false;
+          }
+        }
+      }
+    }
+
 
 end
 
