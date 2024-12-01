@@ -1,3 +1,7 @@
+function Autoformat()
+	require("conform").format()
+end
+
 local function config()
 	require("conform").setup({
 		formatters_by_ft = {
@@ -14,6 +18,8 @@ local function config()
 			require("conform").format({ bufnr = args.buf })
 		end,
 	})
+
+	vim.api.nvim_create_user_command("Autoformat", Autoformat, {})
 end
 
 return { {
