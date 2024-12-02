@@ -162,6 +162,7 @@ local function config_lsp()
 
 	-- Rust analyzer
 	lspconfig.rust_analyzer.setup({
+		capabilities = capabilities,
 		settings = {
 			["rust-analyzer"] = {
 				diagnostics = {
