@@ -171,6 +171,11 @@ local function config_lsp()
 			},
 		},
 	})
+
+	-- Emmet LSP
+	lspconfig.emmet_language_server.setup({
+		capabilities = capabilities,
+	})
 end
 
 -- --------------
